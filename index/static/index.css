@@ -1,0 +1,16 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	width: 100vw;
+	height: 100vh;
+
+	display: grid;
+}
+body > * {
+	grid-area: 1 / 1;
+}
+
+/* c*
