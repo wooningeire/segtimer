@@ -25,25 +25,10 @@ export default {
 	module: {
 		rules: [{
 			test: /\.vue$/,
-			use: [
-				{
-					loader: "vue-loader",
-					options: {
-						shadowMode: false,
-					},
-				},
-			],
+			use: "vue-loader",
 		}, {
 			test: /\.css$/,
-			use: [
-				{
-					loader: "vue-style-loader",
-					options: {
-						shadowMode: false,
-					},
-				},
-				"css-loader",
-			],
+			use: ["vue-style-loader", "css-loader"],
 		}],
 	},
 
