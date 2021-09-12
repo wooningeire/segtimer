@@ -1,7 +1,7 @@
 <template>
 	<main>
-		<segments-list>
-			<Segment v-for="segment of segments" :key="segment.key"></Segment>
+		<segments-list @input="log">
+			<Segment v-for="segment of segments" :segmentDescriptor="segment" :key="segment.key"></Segment>
 		</segments-list>
 
 		<button @click="createSegment">Create segment</button>
@@ -10,20 +10,26 @@
 
 <script>
 import Segment from "./components/Segment.vue";
+import TimerSegment from "./TimerSegment.js";
 
 export default {
 	name: "root",
 
 	data: () => ({
-		durationTotal: 0,
 		segments: [],
 		segmentIdNext: 0,
 	}),
 
 	methods: {
 		createSegment() {
-			this.segments.push({key: this.segmentIdNext});
+			this.segments.push({key: this.segmentIdNext, segment: new TimerSegment()});
 			this.segmentIdNext++;
+		},
+	},
+
+	computed: {
+		durationTotal() {
+			return this.segments.reduce((cumsum, segment) => cumsum + segment.segment.duration, 0);
 		},
 	},
 
