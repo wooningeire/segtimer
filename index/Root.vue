@@ -1,16 +1,23 @@
 <template>
 	<main>
-		<segments-list @input="log">
-			<Segment v-for="segment of segments" :segmentDescriptor="segment" :key="segment.key"></Segment>
+		<segments-list>
+			<SegmentDisplay v-for="segment of segments" :segmentDescriptor="segment" :key="segment.key" />
 		</segments-list>
 
-		<button @click="createSegment">Create segment</button>
+		<div>
+			<button @click="createSegment">Create segment</button>
+			<button @click="startTimer">Start timer</button>
+			<button @click="pauseTimer">Pause timer</button>
+			
+			<TimerDisplay :timer="timer" />
+		</div>
 	</main>
 </template>
 
 <script>
-import Segment from "./components/Segment.vue";
-import TimerSegment from "./TimerSegment.js";
+import SegmentDisplay from "./components/SegmentDisplay.vue";
+import TimerDisplay from "./components/TimerDisplay.vue";
+import {TimerSegment, Timer} from "./timing.js";
 
 export default {
 	name: "root",
@@ -18,12 +25,24 @@ export default {
 	data: () => ({
 		segments: [],
 		segmentIdNext: 0,
+		
+		timer: new Timer(),
 	}),
 
 	methods: {
 		createSegment() {
 			this.segments.push({key: this.segmentIdNext, segment: new TimerSegment()});
 			this.segmentIdNext++;
+		},
+
+		startTimer() {
+			this.timer.duration = this.durationTotal;
+
+			this.timer.start(console.log);
+		},
+
+		pauseTimer() {
+			this.timer?.pause();
 		},
 	},
 
@@ -34,7 +53,8 @@ export default {
 	},
 
 	components: {
-		Segment,
+		SegmentDisplay,
+		TimerDisplay,
 	},
 };
 </script>

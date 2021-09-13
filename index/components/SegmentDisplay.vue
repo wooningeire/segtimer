@@ -1,15 +1,15 @@
 <template>
-	<segment->
+	<div>
 		<input type="text" v-model="segment.label" />
 		<input type="number" v-model="segment.duration" />
-	</segment->
+	</div>
 </template>
 
 <script>
-import TimerSegment from "../TimerSegment.js";
+import {TimerSegment} from "../timing.js";
 
 export default {
-	name: "segment",
+	name: "segmentdisplay",
 
 	props: {
 		segmentDescriptor: {
