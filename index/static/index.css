@@ -8,6 +8,7 @@ body {
 	height: 100vh;
 
 	display: grid;
+	font-family: Zilla Slab;
 }
 body > * {
 	grid-area: 1 / 1;

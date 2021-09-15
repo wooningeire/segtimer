@@ -3,4 +3,6 @@
 import {createApp} from "vue";
 import Root from "./Root.vue";
 
-createApp(Root).mount("main");
+const app = createApp(Root);
+// app.config.compilerOptions.isCustomElement = () => true;
+app.mount("main");

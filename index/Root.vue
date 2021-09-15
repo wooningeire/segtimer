@@ -37,6 +37,7 @@ export default {
 
 		startTimer() {
 			this.timer.duration = this.durationTotal;
+			this.timer.segmentEnds = this.segments.reduce((offsets, segment, i) => (offsets[i - 1] ?? 0) + segment.duration, []);
 
 			this.timer.start(console.log);
 		},

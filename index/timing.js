@@ -2,17 +2,20 @@ export class TimerSegment {
 	duration;
 	label;
 
-	constructor(duration=0, label="") {
+	constructor(duration=1000, label="") {
 		this.duration = duration;
 		this.label = label;
 	}
 }
 
+// probably should not be a class
 export class Timer {
 	absoluteTimeAtLastStart = 0;
 	timeElapsedAtLastPause = 0;
 	
 	duration;
+	segmentEnds = [];
+	segmentIndex = 0;
 
 	active = false;
 
@@ -27,6 +30,10 @@ export class Timer {
 
 		const timeoutCallback = () => {
 			if (!this.active) return;
+
+			while (this.timeElapsedIfActive > this.segmentEnds[this.segmentIndex]) {
+				this.segmentIndex++;
+			}
 
 			if (this.timeElapsedIfActive >= this.duration) {
 				this.active = false;
