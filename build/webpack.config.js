@@ -25,7 +25,14 @@ export default {
 	module: {
 		rules: [{
 			test: /\.vue$/,
-			use: "vue-loader",
+			use: {
+				loader: "vue-loader",
+				options: {
+					compilerOptions: {
+						isCustomElement: tagName => tagName.includes("-"),
+					},
+				},
+			},
 		}, {
 			test: /\.css$/,
 			use: ["vue-style-loader", "css-loader"],

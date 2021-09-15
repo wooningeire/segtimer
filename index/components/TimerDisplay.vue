@@ -1,7 +1,7 @@
 <template>
-	<time-display>
+	<timer-display>
 		{{timer.timeRemaining}}
-	</time-display>
+	</timer-display>
 </template>
 
 <script>

@@ -1,12 +1,14 @@
 <template>
-	<seg-display>
+	<segment-display>
 		<input type="text" v-model="segment.label" class="label-input" placeholder="Unnamed segment" />
 		<input type="number" v-model="segment.duration" class="time-input" />
-	</seg-display>
+		<TimeEditor />
+	</segment-display>
 </template>
 
 <script>
 import {TimerSegment, Timer} from "../timing.js";
+import TimeEditor from "./TimeEditor.vue";
 
 export default {
 	name: "segmentdisplay",
@@ -29,11 +31,15 @@ export default {
 			return this.segmentDescriptor.segment;
 		},
 	},
+
+	components: {
+		TimeEditor,
+	},
 };
 </script>
 
 <style scoped>
-seg-display {
+segment-display {
 	padding: 1em;
 	display: grid;
 	grid-template-rows: repeat(2, auto);
@@ -42,7 +48,7 @@ seg-display {
 	color: #fff;
 }
 
-seg-display + seg-display {
+segment-display + segment-display {
 	border-top: 2px solid;
 }
 
