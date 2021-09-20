@@ -1,17 +1,21 @@
 <template>
 	<segment-display>
 		<input type="text" v-model="segment.label" class="label-input" placeholder="Unnamed segment" />
+		<TimeEntry v-model="segment.duration" />
 		<input type="number" v-model="segment.duration" class="time-input" />
-		<TimeEditor />
+
+		<close-button>×</close-button>
 	</segment-display>
 </template>
 
 <script>
 import {TimerSegment, Timer} from "../timing.js";
-import TimeEditor from "./TimeEditor.vue";
+import TimeEntry from "./TimeEntry.vue";
 
 export default {
 	name: "segmentdisplay",
+
+	emits: ["remove"],
 
 	props: {
 		segmentDescriptor: {
@@ -32,8 +36,12 @@ export default {
 		},
 	},
 
+	methods: {
+		log: console.log,
+	},
+
 	components: {
-		TimeEditor,
+		TimeEntry,
 	},
 };
 </script>
@@ -42,7 +50,8 @@ export default {
 segment-display {
 	padding: 1em;
 	display: grid;
-	grid-template-rows: repeat(2, auto);
+	grid-template-rows: repeat(3, auto);
+	grid-template-columns: 1fr auto;
 
 	background: #448;
 	color: #fff;
@@ -61,11 +70,29 @@ input {
 	font: inherit;
 }
 
+close-button {
+	display: flex;
+
+	user-select: none;
+}
+
+segment-display > close-button {
+	grid-area: 1 / 2;
+	width: 100%;
+
+	font-size: 3em;
+	line-height: 0.5;
+}
+
+segment-display > :is(time-entry, .time-input) {
+	grid-column: span 2;
+}
+
 .label-input {
 	font-size: 1.5em;
 }
 
-.time-input {
+time-entry {
 	font-size: 4em;
 	font-weight: 700;
 }
