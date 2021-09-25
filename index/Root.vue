@@ -3,9 +3,7 @@
 		<segments-list>
 			<SegmentDisplay v-for="segmentDescriptor of segmentDescriptors" :key="segmentDescriptor.key"
 					:segmentDescriptor="segmentDescriptor"
-					:currentSegment="currentSegment"
-					:segmentProgress="segmentProgress"
-					:timeElapsedInSegment="timeElapsedInSegment"
+					:activeSegmentData="activeSegmentData"
 					:timer="timer" />
 		</segments-list>
 
@@ -31,9 +29,12 @@ export default {
 		segmentDescriptors: [],
 		segmentIdNext: 0,
 
-		currentSegment: null,
-		timeElapsedInSegment: 0,
-		segmentProgress: 0,
+		activeSegmentData: {
+			timerActive: false,
+			segmentIndexes: null,
+			segmentIndex: 0,
+			timeElapsedInSegment: 0,
+		},
 		
 		timer: new Timer(),
 	}),
@@ -48,16 +49,23 @@ export default {
 			this.timer.duration = this.durationTotal;
 			this.timer.segmentEnds = this.segmentDescriptors.reduce((offsets, {segment}, i) => offsets.concat((offsets[i - 1] ?? 0) + segment.duration), []);
 
+			this.activeSegmentData.timerActive = true;
+			this.activeSegmentData.segmentIndexes = new Map(this.segmentDescriptors.map(({key}, i) => [key, i]));
+
 			this.timer.start({
 				onIter: () => {
-					this.currentSegment = this.segmentDescriptors[this.timer.segmentIndex].segment;
-					this.timeElapsedInSegment = this.timer.timeElapsedInSegment;
-					this.segmentProgress = this.timer.segmentProgress;
+					// this.currentSegment = this.segmentDescriptors[this.timer.segmentIndex].segment;
+					this.activeSegmentData.timeElapsedInSegment = this.timer.timeElapsedInSegment;
+					this.activeSegmentData.segmentIndex = this.timer.segmentIndex;
+					// this.segmentProgress = this.timer.segmentProgress;
 				},
 				onFinish: () => {
-					this.currentSegment = null;
-					this.timeElapsedInSegment = 0;
-					this.segmentProgress = 0;
+					this.activeSegmentData.timerActive = false;
+
+					// this.currentSegment = null;
+					this.activeSegmentData.timeElapsedInSegment = 0;
+					this.activeSegmentData.segmentIndex = 0;
+					// this.segmentProgress = 0;
 				},
 			});
 		},
@@ -86,7 +94,7 @@ main {
 	grid-template-columns: 1fr 16em;
 }
 
-segmentDescriptors-list {
+segments-list {
 	display: flex;
 	flex-flow: column;
 }

@@ -1,9 +1,9 @@
 <template>
-	<segment-display :style="{'--fade-position': timer.active && currentSegment === segment ? segmentProgress : 0}">
+	<segment-display :style="{'--fade-position': fadePosition}">
 		<input type="text" v-model="segment.label" class="label-input" placeholder="Unnamed segment" />
 		<TimeEntry v-model="segment.duration"
-				:artificialValue="segment.duration - timeElapsedInSegment"
-				:showArtificialValue="currentSegment === segment" />
+				:artificialValue="artificialDisplayValue"
+				:showArtificialValue="activeSegmentData.timerActive" />
 		<input type="number" v-model="segment.duration" class="time-input" />
 
 		<close-button>×</close-button>
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import {TimerSegment, Timer} from "../timing.js";
+import {TimerSegment} from "../timing.js";
 import TimeEntry from "./TimeEntry.vue";
 
 export default {
@@ -25,11 +25,12 @@ export default {
 			segment: TimerSegment,
 		},
 
-		timer: Timer,
-
-		currentSegment: TimerSegment,
-		segmentProgress: Number,
-		timeElapsedInSegment: Number,
+		activeSegmentData: {
+			timerActive: Boolean,
+			segmentIndexes: Map,
+			segmentIndex: Number,
+			timeElapsedInSegment: Number,
+		},
 	},
 
 	data: () => ({
@@ -39,6 +40,42 @@ export default {
 	computed: {
 		segment() {
 			return this.segmentDescriptor.segment;
+		},
+
+		isActive() {
+			return this.activeSegmentData.segmentIndexes
+					? this.activeSegmentData.segmentIndex === this.activeSegmentData.segmentIndexes.get(this.segmentDescriptor.key)
+					: false;
+		},
+
+		hasPassed() {
+			return this.activeSegmentData.segmentIndexes
+					? this.activeSegmentData.segmentIndex > this.activeSegmentData.segmentIndexes.get(this.segmentDescriptor.key)
+					: false;
+		},
+
+		artificialDisplayValue() {
+			if (this.isActive) {
+				return this.segment.duration - this.activeSegmentData.timeElapsedInSegment;
+			} else if (this.hasPassed) {
+				return 0;
+			} else {
+				return this.segment.duration;
+			}
+		},
+
+		fadePosition() {
+			if (this.isActive) {
+				return this.segmentProgress;
+			} else if (this.hasPassed) {
+				return 1;
+			} else {
+				return 0;
+			}
+		},
+
+		segmentProgress() {
+			return this.activeSegmentData.timeElapsedInSegment / this.segment.duration;
 		},
 	},
 
