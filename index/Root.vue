@@ -5,6 +5,7 @@
 					:segmentDescriptor="segmentDescriptor"
 					:currentSegment="currentSegment"
 					:segmentProgress="segmentProgress"
+					:timeElapsedInSegment="timeElapsedInSegment"
 					:timer="timer" />
 		</segments-list>
 
@@ -31,6 +32,7 @@ export default {
 		segmentIdNext: 0,
 
 		currentSegment: null,
+		timeElapsedInSegment: 0,
 		segmentProgress: 0,
 		
 		timer: new Timer(),
@@ -49,9 +51,14 @@ export default {
 			this.timer.start({
 				onIter: () => {
 					this.currentSegment = this.segmentDescriptors[this.timer.segmentIndex].segment;
+					this.timeElapsedInSegment = this.timer.timeElapsedInSegment;
 					this.segmentProgress = this.timer.segmentProgress;
 				},
-				onFinish: () => console.log("done"),
+				onFinish: () => {
+					this.currentSegment = null;
+					this.timeElapsedInSegment = 0;
+					this.segmentProgress = 0;
+				},
 			});
 		},
 

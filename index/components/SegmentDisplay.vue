@@ -1,7 +1,9 @@
 <template>
 	<segment-display :style="{'--fade-position': timer.active && currentSegment === segment ? segmentProgress : 0}">
 		<input type="text" v-model="segment.label" class="label-input" placeholder="Unnamed segment" />
-		<TimeEntry v-model="segment.duration" />
+		<TimeEntry v-model="segment.duration"
+				:artificialValue="segment.duration - timeElapsedInSegment"
+				:showArtificialValue="currentSegment === segment" />
 		<input type="number" v-model="segment.duration" class="time-input" />
 
 		<close-button>×</close-button>
@@ -27,6 +29,7 @@ export default {
 
 		currentSegment: TimerSegment,
 		segmentProgress: Number,
+		timeElapsedInSegment: Number,
 	},
 
 	data: () => ({

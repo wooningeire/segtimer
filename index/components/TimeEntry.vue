@@ -1,5 +1,5 @@
 <template>
-	<time-entry contenteditable>
+	<time-entry :contentEditable="!showArtificialValue">
 		<numeral- class="min">00</numeral->
 		<numeral- class="s">00</numeral->
 		<numeral- class="ms">00</numeral->
@@ -15,19 +15,43 @@ export default {
 			type: Number,
 			default: 0,		
 		},
+
+		artificialValue: {
+			type: Number,
+			defualt: 0,
+		},
+
+		showArtificialValue: {
+			type: Boolean,
+			defualt: false,
+		},
 	},
 
 	watch: {
 		modelValue() {
-			this.updateDisplay();
+			if (this.showArtificialValue) return;
+			this.updateDisplay(this.modelValue);
+		},
+
+		artificialValue() {
+			if (!this.showArtificialValue) return;
+			this.updateDisplay(this.artificialValue);
+		},
+
+		showArtificialValue() {
+			if (this.showArtificialValue) {
+				this.updateDisplay(this.artificialValue);
+			} else {
+				this.updateDisplay(this.modelValue);
+			}
 		},
 	},
 
 	methods: {
-		updateDisplay() {
-			const nMinutes = Math.floor(this.modelValue / 1000 / 60);
-			const nSeconds = Math.floor(this.modelValue / 1000 % 60);
-			const nMilliseconds = Math.floor(this.modelValue % 1000);
+		updateDisplay(value=this.modelValue) {
+			const nMinutes = Math.floor(value / 1000 / 60);
+			const nSeconds = Math.floor(value / 1000 % 60);
+			const nMilliseconds = Math.floor(value % 1000);
 
 			this.$el.querySelector(".min").textContent = nMinutes.toString().padStart(2, "0");
 			this.$el.querySelector(".s").textContent = nSeconds.toString().padStart(2, "0");

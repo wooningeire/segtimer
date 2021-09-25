@@ -27,6 +27,7 @@ export class Timer {
 		this.absoluteTimeAtLastStart = Date.now();
 
 		this.active = true;
+		this.segmentIndex = 0;
 
 		const timeoutCallback = () => {
 			if (!this.active) return;
@@ -66,11 +67,16 @@ export class Timer {
 		return this.duration - this.timeElapsed;
 	}
 
+	get timeElapsedInSegment() {
+		const prevSegmentEnd = this.segmentEnds[this.segmentIndex - 1] ?? 0;
+		return this.timeElapsedIfActive - prevSegmentEnd;
+	}
+
 	get segmentProgress() {
 		const prevSegmentEnd = this.segmentEnds[this.segmentIndex - 1] ?? 0;
-		
+
 		const segmentDuration = this.segmentEnds[this.segmentIndex] - prevSegmentEnd;
-		const timeInSegment = this.timeElapsedIfActive - prevSegmentEnd;
-		return timeInSegment / segmentDuration;
+		const timeElapsedInSegment = this.timeElapsedIfActive - prevSegmentEnd;
+		return timeElapsedInSegment / segmentDuration;
 	}
 }
