@@ -23,7 +23,7 @@ export class Timer {
 		this.duration = duration;
 	}
 
-	start(onFinish) {
+	start({onIter, onFinish}) {
 		this.absoluteTimeAtLastStart = Date.now();
 
 		this.active = true;
@@ -40,6 +40,8 @@ export class Timer {
 				this.timeElapsedAtLastPause = 0;
 				onFinish();
 			} else {
+				onIter();
+
 				setTimeout(timeoutCallback);
 			}
 		};
@@ -62,5 +64,13 @@ export class Timer {
 
 	get timeRemaining() {
 		return this.duration - this.timeElapsed;
+	}
+
+	get segmentProgress() {
+		const prevSegmentEnd = this.segmentEnds[this.segmentIndex - 1] ?? 0;
+		
+		const segmentDuration = this.segmentEnds[this.segmentIndex] - prevSegmentEnd;
+		const timeInSegment = this.timeElapsedIfActive - prevSegmentEnd;
+		return timeInSegment / segmentDuration;
 	}
 }

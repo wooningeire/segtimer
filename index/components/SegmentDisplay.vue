@@ -1,5 +1,5 @@
 <template>
-	<segment-display>
+	<segment-display :style="{'--fade-position': timer.active && currentSegment === segment ? segmentProgress : 0}">
 		<input type="text" v-model="segment.label" class="label-input" placeholder="Unnamed segment" />
 		<TimeEntry v-model="segment.duration" />
 		<input type="number" v-model="segment.duration" class="time-input" />
@@ -24,6 +24,9 @@ export default {
 		},
 
 		timer: Timer,
+
+		currentSegment: TimerSegment,
+		segmentProgress: Number,
 	},
 
 	data: () => ({
@@ -53,8 +56,12 @@ segment-display {
 	grid-template-rows: repeat(3, auto);
 	grid-template-columns: 1fr auto;
 
-	background: #448;
+	background: linear-gradient(#77b var(--fade-pct), #448 var(--fade-pct));
 	color: #fff;
+
+	--fade-position: 0;
+
+	--fade-pct: calc(var(--fade-position) * 100%);
 }
 
 segment-display + segment-display {

@@ -1,7 +1,11 @@
 <template>
 	<main>
 		<segments-list>
-			<SegmentDisplay v-for="segment of segments" :segmentDescriptor="segment" :key="segment.key" />
+			<SegmentDisplay v-for="segmentDescriptor of segmentDescriptors" :key="segmentDescriptor.key"
+					:segmentDescriptor="segmentDescriptor"
+					:currentSegment="currentSegment"
+					:segmentProgress="segmentProgress"
+					:timer="timer" />
 		</segments-list>
 
 		<div>
@@ -23,23 +27,32 @@ export default {
 	name: "root",
 
 	data: () => ({
-		segments: [],
+		segmentDescriptors: [],
 		segmentIdNext: 0,
+
+		currentSegment: null,
+		segmentProgress: 0,
 		
 		timer: new Timer(),
 	}),
 
 	methods: {
 		createSegment() {
-			this.segments.push({key: this.segmentIdNext, segment: new TimerSegment()});
+			this.segmentDescriptors.push({key: this.segmentIdNext, segment: new TimerSegment()});
 			this.segmentIdNext++;
 		},
 
 		startTimer() {
 			this.timer.duration = this.durationTotal;
-			this.timer.segmentEnds = this.segments.reduce((offsets, segment, i) => (offsets[i - 1] ?? 0) + segment.duration, []);
+			this.timer.segmentEnds = this.segmentDescriptors.reduce((offsets, {segment}, i) => offsets.concat((offsets[i - 1] ?? 0) + segment.duration), []);
 
-			this.timer.start(console.log);
+			this.timer.start({
+				onIter: () => {
+					this.currentSegment = this.segmentDescriptors[this.timer.segmentIndex].segment;
+					this.segmentProgress = this.timer.segmentProgress;
+				},
+				onFinish: () => console.log("done"),
+			});
 		},
 
 		pauseTimer() {
@@ -49,7 +62,7 @@ export default {
 
 	computed: {
 		durationTotal() {
-			return this.segments.reduce((cumsum, segment) => cumsum + segment.segment.duration, 0);
+			return this.segmentDescriptors.reduce((cumsum, {segment}) => cumsum + segment.duration, 0);
 		},
 	},
 
@@ -66,7 +79,7 @@ main {
 	grid-template-columns: 1fr 16em;
 }
 
-segments-list {
+segmentDescriptors-list {
 	display: flex;
 	flex-flow: column;
 }
