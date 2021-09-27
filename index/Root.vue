@@ -4,7 +4,8 @@
 			<SegmentDisplay v-for="segmentDescriptor of segmentDescriptors" :key="segmentDescriptor.key"
 					:segmentDescriptor="segmentDescriptor"
 					:activeSegmentData="activeSegmentData"
-					:timer="timer" />
+					:timer="timer"
+					@remove="removeSegment" />
 		</segments-list>
 
 		<div>
@@ -72,6 +73,10 @@ export default {
 
 		pauseTimer() {
 			this.timer?.pause();
+		},
+
+		removeSegment(segmentTarget) {
+			this.segmentDescriptors.splice(this.segmentDescriptors.findIndex(({segment}) => segment === segmentTarget), 1);
 		},
 	},
 

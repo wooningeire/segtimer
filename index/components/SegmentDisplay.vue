@@ -6,7 +6,9 @@
 				:showArtificialValue="activeSegmentData.timerActive" />
 		<input type="number" v-model="segment.duration" class="time-input" />
 
-		<close-button>×</close-button>
+		<close-button
+				v-if="!activeSegmentData.timerActive"
+				@click="remove">×</close-button>
 	</segment-display>
 </template>
 
@@ -81,6 +83,10 @@ export default {
 
 	methods: {
 		log: console.log,
+
+		remove() {
+			this.$emit("remove", this.segment);
+		},
 	},
 
 	components: {
