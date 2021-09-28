@@ -1,8 +1,11 @@
 <template>
-	<time-entry :contentEditable="!showArtificialValue">
-		<numeral- class="min">00</numeral->
-		<numeral- class="s">00</numeral->
-		<numeral- class="ms">00</numeral->
+	<time-entry	@input="onInput">
+		<numeral- class="min"
+				:contentEditable="!showArtificialValue">00</numeral->
+		<numeral- class="s"
+				:contentEditable="!showArtificialValue">00</numeral->
+		<numeral- class="ms"
+				:contentEditable="!showArtificialValue">00</numeral->
 	</time-entry>
 </template>
 
@@ -13,7 +16,7 @@ export default {
 	props: {
 		modelValue: {
 			type: Number,
-			default: 0,		
+			default: 0,
 		},
 
 		artificialValue: {
@@ -57,6 +60,36 @@ export default {
 			this.$el.querySelector(".s").textContent = nSeconds.toString().padStart(2, "0");
 			this.$el.querySelector(".ms").textContent = nMilliseconds.toString().padStart(3, "0");
 		},
+
+		convertOut() {
+			return Number(this.$el.querySelector(".min").textContent) * 1000 * 60
+					+ Number(this.$el.querySelector(".s").textContent) * 1000
+					+ Number(this.$el.querySelector(".ms").textContent);
+		},
+
+		onInput() {
+			console.log("eh");
+			this.$emit("update:modelValue", this.convertOut());
+		},
+
+/* 		onFocus() {
+			const secondsNumeral = this.$el.querySelector(".s");
+			const minutesNumeral = this.$el.querySelector(".min");
+
+			const selection = getSelection();
+			selection.removeAllRanges();
+			selection.collapse(secondsNumeral, 1);
+
+			const onInput = event => {
+				const secondsExcess = secondsNumeral.textContent.slice(-Infinity, -3);
+				const seconds = secondsNumeral.textContent.slice(-3, -1);
+
+				minutesNumeral.textContent += secondsExcess;
+				secondsNumeral.textContent = seconds;
+			};
+
+			this.$el.addEventListener("input", onInput);
+		}, */
 	},
 
 	mounted() {

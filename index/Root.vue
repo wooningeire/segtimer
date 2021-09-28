@@ -4,7 +4,6 @@
 			<SegmentDisplay v-for="segmentDescriptor of segmentDescriptors" :key="segmentDescriptor.key"
 					:segmentDescriptor="segmentDescriptor"
 					:activeSegmentData="activeSegmentData"
-					:timer="timer"
 					@remove="removeSegment" />
 		</segments-list>
 
@@ -12,6 +11,7 @@
 			<button @click="createSegment">Create segment</button>
 			<button @click="startTimer">Start timer</button>
 			<button @click="pauseTimer">Pause timer</button>
+			<button @click="stopTimer">Stop timer</button>
 			
 			<TimerDisplay :timer="timer" />
 		</div>
@@ -73,6 +73,11 @@ export default {
 
 		pauseTimer() {
 			this.timer?.pause();
+		},
+
+		stopTimer() {
+			// todo implement onFinish
+			this.timer?.stop();
 		},
 
 		removeSegment(segmentTarget) {

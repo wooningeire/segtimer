@@ -37,8 +37,7 @@ export class Timer {
 			}
 
 			if (this.timeElapsedIfActive >= this.duration) {
-				this.active = false;
-				this.timeElapsedAtLastPause = 0;
+				this.stop();
 				onFinish();
 			} else {
 				onIter();
@@ -53,6 +52,11 @@ export class Timer {
 	pause() {
 		this.active = false;
 		this.timeElapsedAtLastPause = this.timeElapsedIfActive;
+	}
+
+	stop() {
+		this.active = false;
+		this.timeElapsedAtLastPause = 0;
 	}
 
 	get timeElapsedIfActive() {
